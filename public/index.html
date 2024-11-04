@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Room</title>
+</head>
+<body>
+  <div id="chat-container">
+    <input id="username" type="text" placeholder="Enter your name">
+    <button onclick="joinChat()">Join Chat</button>
+    <div id="chat-box"></div>
+    <input id="chat-input" type="text" placeholder="Type a message" disabled>
+    <button onclick="sendMessage()" disabled>Send</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let username = '';
+
+    function joinChat() {
+      username = document.getElementById('username').value;
+      if (username) {
+        socket.emit('join', username);
+        document.getElementById('chat-input').disabled = false;
+        document.querySelector('button[onclick="sendMessage()"]').disabled = false;
+      }
+    }
+
+    socket.on('message', (msg) => {
+      const chatBox = document.getElementById('chat-box');
+      const message = document.createElement('div');
+      message.innerText = msg;
+      chatBox.appendChild(message);
+    });
+
+    function sendMessage() {
+      const message = document.getElementById('chat-input').value;
+      if (message) {
+        socket.emit('chatMessage', message);
+        document.getElementById('chat-input').value = '';
+      }
+    }
+  </script>
+</body>
+</html>
