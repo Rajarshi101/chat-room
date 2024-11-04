@@ -6,9 +6,12 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.get('/', (req, res) => {
-  res.send('Chat server is running');
-});
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// app.get('/', (req, res) => {
+//   res.send('Chat server is running');
+// });
 
 io.on('connection', (socket) => {
   socket.on('join', (username) => {
